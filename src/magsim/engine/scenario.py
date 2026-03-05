@@ -78,16 +78,20 @@ class GameScenario:
                 agents[cfg.idx] = cfg.agent
 
         # Choose RNG strategy
+        # 1. Create a real RNG base (deterministic if seed is provided)
+        base_rng = (
+            random.Random(self.seed) if self.seed is not None else random.Random()
+        )
+
         if self.dice_rolls is not None:
-            self.mock_rng = MagicMock()
+            # 2. Wrap the real RNG so sample(), choices(), etc., still work natively
+            self.mock_rng = MagicMock(wraps=base_rng)
+            # 3. Intercept ONLY randint for the fixed dice rolls
             self.mock_rng.randint.side_effect = itertools.cycle(self.dice_rolls)
             rng = self.mock_rng
-        elif self.seed is not None:
-            rng = random.Random(self.seed)
-            self.mock_rng = None
         else:
-            rng = random.Random()
             self.mock_rng = None
+            rng = base_rng
 
         # Initialize engine
         board = (

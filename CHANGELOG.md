@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1 (2026-03-05)
+
+### Fix
+
+- **frontend**: Fix path problem in WASM mode
+
 ## 1.1.0 (2026-03-05)
 
 ### Feat

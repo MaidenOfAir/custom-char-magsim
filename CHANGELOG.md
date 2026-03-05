@@ -1,5 +1,36 @@
 # Changelog
 
+## 1.1.0 (2026-03-05)
+
+### Feat
+
+- Add fuzzy racer name for compare command
+- **frontend**: Automatically download data if missing
+- Add GUI command
+
+### Fix
+
+- **frontend**: Increase possible seed numbers
+- Fix Egg/Twin bug with fixed RNG rolls
+- **frontend**: Load empty dataframe if initial directory doesn't have data
+- **frontend**: Fix last turn not having a final step
+- **frontend**: Default to notebook location on initial data folder
+
+## 1.0.7 (2026-02-24)
+
+## 1.0.6 (2026-02-24)
+
+### Fix
+
+- Provide less data so marimo WASM can handle it
+- Fix pyarrow and polars issues
+
+## 1.0.5 (2026-02-24)
+
+## 1.0.4 (2026-02-24)
+
+## 1.0.3 (2026-02-24)
+
 ## 1.0.2 (2026-02-24)
 
 ### Refactor

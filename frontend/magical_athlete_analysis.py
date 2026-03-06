@@ -234,9 +234,14 @@ def cell_load_data(
             import urllib.request
 
             def _wasm_read_parquet(path: Path) -> pl.DataFrame:
+                import pyarrow.parquet as pq
+
                 with urllib.request.urlopen(str(path)) as response:
                     parquet_bytes = response.read()
-                return pl.read_parquet(io.BytesIO(parquet_bytes))
+
+                # WASM FIX: Use PyArrow to decode, bypassing native Polars Parquet engine
+                table = pq.read_table(io.BytesIO(parquet_bytes))
+                return pl.from_arrow(table)
 
             df_racer_results = _wasm_read_parquet(path_res)
             df_races = _wasm_read_parquet(path_races)

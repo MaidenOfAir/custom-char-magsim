@@ -77,7 +77,6 @@ async def cell_import():
     from magsim.engine.scenario import GameScenario, RacerConfig
     from magsim.simulation.telemetry import StepSnapshot
     from magsim.simulation.config import GameConfig
-
     return (
         Any,
         BOARD_DEFINITIONS,
@@ -555,14 +554,14 @@ def cell_config_ui(
         start=0,
         stop=1_000_000,
         value=get_seed(),
-        label="Random Seed",
+        label="Seed",
         on_change=lambda v: manual_change(set_seed, v),
     )
 
     board_selector = mo.ui.dropdown(
         options=sorted(list(BOARD_DEFINITIONS.keys())),
         value=get_board(),
-        label="Board Map",
+        label="Board",
         on_change=lambda v: manual_change(set_board, v),
     )
 
@@ -773,7 +772,6 @@ def _(
                 align="center",
             ),
             mo.vstack([use_scripted_dice_ui, dice_input]),
-            mo.hstack([debug_mode_ui], justify="start"),
             mo.md("### Racers"),
             racer_table,
             mo.hstack([add_racer_dropdown, add_button], justify="start"),
@@ -798,8 +796,10 @@ def _(
                     load_encoded_btn,
                     mo.md("Copy encoded config: "),
                     share_widget,
+                    debug_mode_ui,
                 ],
                 justify="start",
+                align="start",
             ),
         ],
     ).style(
@@ -1619,7 +1619,6 @@ def cell_vsialize_track(
                 {track_group_start}
                 {"".join(svg_elements)}
             </svg>"""
-
     return (render_game_track,)
 
 
@@ -2950,7 +2949,6 @@ def _(BG_COLOR, alt, np, pl):
             .add_params(xzoom)
             .properties(width="container", height=800, background=BG_COLOR)
         )
-
     return (build_quadrant_chart,)
 
 

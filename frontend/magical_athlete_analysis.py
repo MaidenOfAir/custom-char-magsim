@@ -699,8 +699,7 @@ def cell_config_ui(
         w_pos = pos_widget_map[ui_racer]
         b_rem, b_up, b_down = action_buttons[ui_racer]
         move_grp = mo.hstack([b_up, b_down], justify="center", gap=0)
-        # Separated the index (i + 1) and the ui_racer into distinct columns
-        table_rows.append(f"| {i + 1} | {ui_racer} | {w_pos} | {move_grp} | {b_rem} |")
+        table_rows.append(f"| {i} | {ui_racer} | {w_pos} | {move_grp} | {b_rem} |")
 
     racer_table = mo.md(
         "| # | Racer | Start Pos | Order | Remove |\n"

@@ -77,6 +77,7 @@ async def cell_import():
     from magsim.engine.scenario import GameScenario, RacerConfig
     from magsim.simulation.telemetry import StepSnapshot
     from magsim.simulation.config import GameConfig
+
     return (
         Any,
         BOARD_DEFINITIONS,
@@ -698,11 +699,12 @@ def cell_config_ui(
         w_pos = pos_widget_map[ui_racer]
         b_rem, b_up, b_down = action_buttons[ui_racer]
         move_grp = mo.hstack([b_up, b_down], justify="center", gap=0)
-        table_rows.append(f"| {i + 1}. {ui_racer} | {w_pos} | {move_grp} | {b_rem} |")
+        # Separated the index (i + 1) and the ui_racer into distinct columns
+        table_rows.append(f"| {i + 1} | {ui_racer} | {w_pos} | {move_grp} | {b_rem} |")
 
     racer_table = mo.md(
-        "| Racer | Start Pos | Order | Remove |\n"
-        "| :--- | :--- | :---: | :---: |\n" + "\n".join(table_rows),
+        "| # | Racer | Start Pos | Order | Remove |\n"
+        "| :---: | :--- | :--- | :---: | :---: |\n" + "\n".join(table_rows),
     )
     return (
         add_button,
@@ -1619,6 +1621,7 @@ def cell_vsialize_track(
                 {track_group_start}
                 {"".join(svg_elements)}
             </svg>"""
+
     return (render_game_track,)
 
 
@@ -2949,6 +2952,7 @@ def _(BG_COLOR, alt, np, pl):
             .add_params(xzoom)
             .properties(width="container", height=800, background=BG_COLOR)
         )
+
     return (build_quadrant_chart,)
 
 

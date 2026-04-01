@@ -26,8 +26,8 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class BlimpModifier(RacerModifier, RollModificationMixin):
-    name: AbilityName | ModifierName = "BlimpModifier"
+class HalcyonModifier(RacerModifier, RollModificationMixin):
+    name: AbilityName | ModifierName = "HalcyonModifier"
 
     @override
     def modify_roll(
@@ -48,10 +48,10 @@ class BlimpModifier(RacerModifier, RollModificationMixin):
 
         if owner.position < threshold:
             delta = 3
-            source = "BlimpSpeed"
+            source = "HalcyonSpeed"
         else:
             delta = -1
-            source = "BlimpSlow"
+            source = "HalcyonSlow"
 
         query.modifiers.append(delta)
         query.modifier_sources.append((source, delta))
@@ -67,8 +67,8 @@ class BlimpModifier(RacerModifier, RollModificationMixin):
 
 
 @dataclass
-class BlimpModifierManager(Ability, LifecycleManagedMixin):
-    name: AbilityName = "BlimpModifierManager"
+class HalcyonModifierManager(Ability, LifecycleManagedMixin):
+    name: AbilityName = "HalcyonModifierManager"
     triggers: tuple[type[GameEvent], ...] = ()
 
     @override
@@ -77,7 +77,7 @@ class BlimpModifierManager(Ability, LifecycleManagedMixin):
         add_racer_modifier(
             engine,
             owner_idx,
-            BlimpModifier(owner_idx=owner_idx),
+            HalcyonModifier(owner_idx=owner_idx),
         )
 
     @override
@@ -85,5 +85,5 @@ class BlimpModifierManager(Ability, LifecycleManagedMixin):
         remove_racer_modifier(
             engine,
             owner_idx,
-            BlimpModifier(owner_idx=owner_idx),
+            HalcyonModifier(owner_idx=owner_idx),
         )

@@ -45,6 +45,9 @@ class HalcyonModifier(RacerModifier, RollModificationMixin):
             return []
 
         threshold = engine.state.board.second_turn or engine.state.board.length // 2
+        """Threshold for Blimp's ability. Overwritten below for Halcyon."""
+
+        threshold = 15
 
         if owner.position < threshold:
             delta = 3

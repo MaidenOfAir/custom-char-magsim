@@ -19,6 +19,7 @@ RacerName = Literal[
     "Genius",
     "Gunk",
     "Hare",
+    "Halcyon",
     "Heckler",
     "HugeBaby",
     "Hypnotist",
@@ -59,6 +60,7 @@ AbilityName = Literal[
     "GeniusPrediction",
     "GunkSlime",
     "HareHubris",
+    "HalcyonModifierManager"
     "HecklerHeckle",
     "HugeBabyPush",
     "HypnotistWarp",
@@ -88,6 +90,7 @@ RacerModifierName = Literal[
     "CoachBoost",
     "GunkSlimeModifier",
     "HareSpeed",
+    "HalcyonModifier"
     "HugeBabyBlocker",
     "LeaptoadJump",
     "MastermindPrediction",

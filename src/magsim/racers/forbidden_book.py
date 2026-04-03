@@ -22,17 +22,25 @@ if TYPE_CHECKING:
 
 
 @dataclass(eq=False)
-class StrikeOne(RacerModifier):
+class ForbiddenBookStrikeOne(RacerModifier):
     """
     Applied the first time a racer other than stickler rolls a 6. Does nothing.
     """
 
-    name: AbilityName | ModifierName = "StrikeOne"
+    name: AbilityName | ModifierName = "ForbiddenBookStrikeOne"
+
+@dataclass(eq=False)
+class ForbiddenBookStrikeTwo(RacerModifier):
+    """
+    Applied the second time a racer other than stickler rolls a 6. Does nothing.
+    """
+
+    name: AbilityName | ModifierName = "ForbiddenBookStrikeTwo"
 
 
 @dataclass
 class ForbiddenBookIncinerate(Ability):
-    name: AbilityName = "Incinerate"
+    name: AbilityName = "ForbiddenBookIncinerate"
     triggers: tuple[type[GameEvent], ...] = (RollResultEvent)
 
     @override
@@ -57,7 +65,7 @@ class ForbiddenBookIncinerate(Ability):
 
         #Check if racer has StrikeTwo, eliminate them if so
         mod = next(
-            (m for m in event.target_racer_idx if isinstance(m, StrikeTwo)),
+            (m for m in event.target_racer_idx if isinstance(m, ForbiddenBookStrikeTwo)),
             None,
         )
 
@@ -96,7 +104,7 @@ class ForbiddenBookIncinerate(Ability):
 
         #Check if racer has StrikeOne, Apply StrikeTwo if so
         mod = next(
-            (m for m in event.target_racer_idx if isinstance(m, StrikeOne)),
+            (m for m in event.target_racer_idx if isinstance(m, ForbiddenBookStrikeOne)),
             None,
         )
 
@@ -105,7 +113,7 @@ class ForbiddenBookIncinerate(Ability):
                 f"Careful {engine.get_racer(event.target_racer_idx).repr}, that's strike two...",
             )
 
-            add_racer_modifier(engine, event.target_racer_idx, StrikeTwo(owner_idx=owner_idx))
+            add_racer_modifier(engine, event.target_racer_idx, ForbiddenBookStrikeTwo(owner_idx=owner_idx))
 
             return AbilityTriggeredEvent(
                 responsible_racer_idx=owner.idx,
@@ -115,7 +123,7 @@ class ForbiddenBookIncinerate(Ability):
             )
 
         #If racer did not have StrikeTwo or StrikeOne, apply StrikeOne
-        add_racer_modifier(engine, event.target_racer_idx, StrikeOne(owner_idx=owner_idx))
+        add_racer_modifier(engine, event.target_racer_idx, ForbiddenBokStrikeOne(owner_idx=owner_idx))
 
         return AbilityTriggeredEvent(
             responsible_racer_idx=owner.idx,

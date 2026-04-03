@@ -16,6 +16,7 @@ RacerName = Literal[
     "Duelist",
     "Egg",
     "FlipFlop",
+    "ForbiddenBook",
     "Genius",
     "Gunk",
     "Hare",
@@ -57,6 +58,7 @@ AbilityName = Literal[
     "DuelistDuel",
     "EggCopy",
     "FlipFlopSwap",
+    "ForbiddenBokIncinerate",
     "GeniusPrediction",
     "GunkSlime",
     "HareHubris",
@@ -88,6 +90,8 @@ AbilityName = Literal[
 RacerModifierName = Literal[
     "BlimpModifier",
     "CoachBoost",
+    "ForbiddenBookStrikeOne",
+    "ForbiddenBookStrikeTwo",
     "GunkSlimeModifier",
     "HareSpeed",
     "HalcyonModifier"

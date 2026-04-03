@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, override
 
 from magsim.core.abilities import Ability
-from magsim.core.events import Phase, PostWarpEvent
+from magsim.core.events import Phase, RollResultEvent
 from magsim.core.mixins import (
     LifecycleManagedMixin,
     MovementValidatorMixin,
@@ -41,13 +41,14 @@ class ForbiddenBookStrikeTwo(RacerModifier):
 @dataclass
 class ForbiddenBookIncinerate(Ability):
     name: AbilityName = "ForbiddenBookIncinerate"
-    triggers: tuple[type[GameEvent], ...] = (RollResultEvent)
+    triggers: tuple[type[GameEvent], ...] = (RollResultEvent,)
 
     @override
     def execute(
         self,
         event: GameEvent,
         owner: ActiveRacerState,
+        engine: GameEngine,
         agent: Agent,
     ) -> AbilityTriggeredEventOrSkipped:
 
@@ -59,13 +60,13 @@ class ForbiddenBookIncinerate(Ability):
             return "skip_trigger"
 
         #Check if racer rolled 5 or 6
-        dice_val - engine.state.roll_state.dice_value
+        dice_val = engine.state.roll_state.dice_value
         if dice_val is None or dice_val not in (5,6):
             return "skip_trigger"
 
         #Check if racer has StrikeTwo, eliminate them if so
         mod = next(
-            (m for m in event.target_racer_idx if isinstance(m, ForbiddenBookStrikeTwo)),
+            (m for m in event.target_racer_idx.modifiers if isinstance(m, ForbiddenBookStrikeTwo)),
             None,
         )
 

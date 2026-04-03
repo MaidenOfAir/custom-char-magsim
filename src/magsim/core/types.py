@@ -58,11 +58,11 @@ AbilityName = Literal[
     "DuelistDuel",
     "EggCopy",
     "FlipFlopSwap",
-    "ForbiddenBokIncinerate",
+    "ForbiddenBookIncinerate",
     "GeniusPrediction",
     "GunkSlime",
     "HareHubris",
-    "HalcyonModifierManager"
+    "HalcyonModifierManager",
     "HecklerHeckle",
     "HugeBabyPush",
     "HypnotistWarp",
@@ -94,7 +94,7 @@ RacerModifierName = Literal[
     "ForbiddenBookStrikeTwo",
     "GunkSlimeModifier",
     "HareSpeed",
-    "HalcyonModifier"
+    "HalcyonModifier",
     "HugeBabyBlocker",
     "LeaptoadJump",
     "MastermindPrediction",

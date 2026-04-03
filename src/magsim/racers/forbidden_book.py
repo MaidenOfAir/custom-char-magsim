@@ -22,61 +22,105 @@ if TYPE_CHECKING:
 
 
 @dataclass(eq=False)
-class SticklerConstraint(RacerModifier, MovementValidatorMixin):
+class StrikeOne(RacerModifier):
     """
-    Prevents the racer from moving if the destination exceeds the board length.
-    Applied by Stickler to all OTHER racers.
+    Applied the first time a racer other than stickler rolls a 6. Does nothing.
     """
 
-    name: AbilityName | ModifierName = "SticklerStrictFinish"
-    priority: int = 0  # High priority validation
-
-    @override
-    def validate_move(
-        self,
-        engine: GameEngine,
-        racer_idx: int,
-        start_tile: int,
-        end_tile: int,
-    ) -> bool:
-        board_len = engine.state.board.length
-        if end_tile > board_len:
-            engine.log_info(
-                f"{self.name}: {engine.get_racer(racer_idx).repr} tried to finish but overshot the goal by {end_tile - board_len}!",
-            )
-            if engine.on_event_processed is not None:
-                engine.on_event_processed(
-                    engine,
-                    PostWarpEvent(
-                        target_racer_idx=racer_idx,
-                        responsible_racer_idx=self.owner_idx,
-                        source=self.name,
-                        phase=Phase.ROLL_WINDOW,
-                        start_tile=board_len,
-                        end_tile=start_tile,
-                    ),
-                )
-            return False
-        return True
+    name: AbilityName | ModifierName = "StrikeOne"
 
 
 @dataclass
-class SticklerStrictFinish(Ability, LifecycleManagedMixin):
-    name: AbilityName = "SticklerStrictFinishManager"
-    triggers: tuple[type[GameEvent], ...] = ()  # No active event triggers
+class ForbiddenBookIncinerate(Ability):
+    name: AbilityName = "Incinerate"
+    triggers: tuple[type[GameEvent], ...] = (RollResultEvent)
 
     @override
-    def on_gain(self, engine: GameEngine, owner_idx: int) -> None:
-        """Apply the constraint modifier to all other racers."""
-        constraint = SticklerConstraint(owner_idx=owner_idx)
-        for racer in engine.state.racers:
-            if racer.idx != owner_idx:
-                add_racer_modifier(engine, racer.idx, constraint)
+    def execute(
+        self,
+        event: GameEvent,
+        owner: ActiveRacerState,
+        agent: Agent,
+    ) -> AbilityTriggeredEventOrSkipped:
 
-    @override
-    def on_loss(self, engine: GameEngine, owner_idx: int) -> None:
-        """Remove the constraint modifier from all other racers."""
-        constraint = SticklerConstraint(owner_idx=owner_idx)
-        for racer in engine.state.racers:
-            if racer.idx != owner_idx:
-                remove_racer_modifier(engine, racer.idx, constraint)
+        #Cancel ability if riggered at wrong time or on owner's turn'
+        if (
+            not isinstance(event, RollResultEvent)
+            or event.target_racer_idx == owner.idx
+        ):
+            return "skip_trigger"
+
+        #Check if racer rolled 5 or 6
+        dice_val - engine.state.roll_state.dice_value
+        if dice_val is None or dice_val not in (5,6):
+            return "skip_trigger"
+
+        #Check if racer has StrikeTwo, eliminate them if so
+        mod = next(
+            (m for m in event.target_racer_idx if isinstance(m, StrikeTwo)),
+            None,
+        )
+
+        if mod:
+            engine.log_info(
+                f"{engine.get_racer(event.target_racer_idx).repr}... YOU'RE OUTTA HERE!",
+            )
+
+            engine.push_event(
+                RacerEliminatedEvent(
+                    target_racer_idx=event.target_racer_idx,
+                    responsible_racer_idx=owner.idx,
+                    source=self.name,
+                    phase=event.phase,
+                ),
+            )
+
+            #Check if all but one player has been eliminated, to activate instant game end
+            active_count = sum(1 for r in engine.state.racers if r.active)
+            if active_count == 1:
+                rank = sum([1 for r in engine.state.racers if r.finished]) + 1
+                if rank <= 2:
+                    engine.log_info(f"{owner.repr} is the last remaining racer.")
+                    mark_finished(engine, racer=owner, rank=rank)
+                else:
+                    engine.log_error(
+                        f"Unexpected state: {owner.repr} is the last remaining racer but more than one racer has finished.",
+                    )
+
+            return AbilityTriggeredEvent(
+                responsible_racer_idx=owner.idx,
+                source=self.name,
+                phase=event.phase,
+                target_racer_idx=event.target_racer_idx,
+            )
+
+        #Check if racer has StrikeOne, Apply StrikeTwo if so
+        mod = next(
+            (m for m in event.target_racer_idx if isinstance(m, StrikeOne)),
+            None,
+        )
+
+        if mod:
+            engine.log_info(
+                f"Careful {engine.get_racer(event.target_racer_idx).repr}, that's strike two...",
+            )
+
+            add_racer_modifier(engine, event.target_racer_idx, StrikeTwo(owner_idx=owner_idx))
+
+            return AbilityTriggeredEvent(
+                responsible_racer_idx=owner.idx,
+                source=self.name,
+                phase=event.phase,
+                target_racer_idx=event.target_racer_idx,
+            )
+
+        #If racer did not have StrikeTwo or StrikeOne, apply StrikeOne
+        add_racer_modifier(engine, event.target_racer_idx, StrikeOne(owner_idx=owner_idx))
+
+        return AbilityTriggeredEvent(
+            responsible_racer_idx=owner.idx,
+            source=self.name,
+            phase=event.phase,
+            target_racer_idx=event.target_racer_idx)
+
+

@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, override
 
 from magsim.core.abilities import Ability
-from magsim.core.events import Phase, RollResultEvent
+from magsim.core.events import Phase, RollResultEvent, AbilityTriggeredEvent, RacerEliminatedEvent
 from magsim.core.mixins import (
     LifecycleManagedMixin,
     MovementValidatorMixin,
@@ -64,15 +64,28 @@ class ForbiddenBookIncinerate(Ability):
         if dice_val is None or dice_val not in (5,6):
             return "skip_trigger"
 
+        for racer in engine.state.racers:
+            if racer.idx == event.target_racer_idx:
+                striker = racer
+
         #Check if racer has StrikeTwo, eliminate them if so
         mod = next(
-            (m for m in event.target_racer_idx.modifiers if isinstance(m, ForbiddenBookStrikeTwo)),
+            (m for m in striker.modifiers if isinstance(m, ForbiddenBookStrikeTwo)),
             None,
         )
 
         if mod:
+
+
+            #Strip racer with 3 strikes of abilities and destroy them
+            engine.clear_all_abilities(striker.idx)
+            striker.eliminate()
+
             engine.log_info(
-                f"{engine.get_racer(event.target_racer_idx).repr}... YOU'RE OUTTA HERE!",
+                f"{owner.repr}: \"{striker.repr}... YOU'RE OUTTA HERE!\"",
+            )
+            engine.log_info(
+                f"{striker.repr} was incinerated!!!",
             )
 
             engine.push_event(
@@ -105,16 +118,16 @@ class ForbiddenBookIncinerate(Ability):
 
         #Check if racer has StrikeOne, Apply StrikeTwo if so
         mod = next(
-            (m for m in event.target_racer_idx if isinstance(m, ForbiddenBookStrikeOne)),
+            (m for m in striker.modifiers if isinstance(m, ForbiddenBookStrikeOne)),
             None,
         )
 
         if mod:
             engine.log_info(
-                f"Careful {engine.get_racer(event.target_racer_idx).repr}, that's strike two...",
+                f"{owner.repr}: \"Careful {striker.repr}, that's strike two...\"",
             )
 
-            add_racer_modifier(engine, event.target_racer_idx, ForbiddenBookStrikeTwo(owner_idx=owner_idx))
+            add_racer_modifier(engine, event.target_racer_idx, ForbiddenBookStrikeTwo(owner_idx=owner.idx))
 
             return AbilityTriggeredEvent(
                 responsible_racer_idx=owner.idx,
@@ -124,7 +137,11 @@ class ForbiddenBookIncinerate(Ability):
             )
 
         #If racer did not have StrikeTwo or StrikeOne, apply StrikeOne
-        add_racer_modifier(engine, event.target_racer_idx, ForbiddenBokStrikeOne(owner_idx=owner_idx))
+        add_racer_modifier(engine, event.target_racer_idx, ForbiddenBookStrikeOne(owner_idx=owner.idx))
+
+        engine.log_info(
+                f"{owner.repr}: \"Strike one for {striker.repr}!\"",
+            )
 
         return AbilityTriggeredEvent(
             responsible_racer_idx=owner.idx,

@@ -214,5 +214,17 @@
         "speed": 4.061,
         "winrate": 0.103,
         "avg_vp": 1.024
+    },
+    {
+        "racer_name": "Halcyon",
+        "speed": 0,
+        "winrate": 0,
+        "avg_vp": 0
+    },
+    {
+        "racer_name": "ForbiddenBook",
+        "speed": 0,
+        "winrate": 0,
+        "avg_vp": 0
     }
 ]

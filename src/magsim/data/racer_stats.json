@@ -226,5 +226,17 @@
         "speed": 3.5,
         "winrate": 0.203,
         "avg_vp": 1.62
+    },
+    {
+        "racer_name": "Halcyon",
+        "speed": 0,
+        "winrate": 0,
+        "avg_vp": 0
+    },
+    {
+        "racer_name": "Shoe",
+        "speed": 0,
+        "winrate": 0,
+        "avg_vp": 0
     }
 ]

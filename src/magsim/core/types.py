@@ -36,6 +36,7 @@ RacerName = Literal[
     "Romantic",
     "RocketScientist",
     "Scoocher",
+    "Shoe",
     "Sisyphus",
     "Skipper",
     "Stickler",
@@ -79,6 +80,7 @@ AbilityName = Literal[
     "RomanticMove",
     "RocketScientistBoost",
     "ScoochStep",
+    "ShoeLaced",
     "SisyphusCurse",
     "SkipperTurn",
     "SticklerStrictFinishManager",
@@ -101,6 +103,7 @@ RacerModifierName = Literal[
     "PartySelfBoost",
     "RocketScientistLiftoff",
     "SisyphusStumble",
+    "shoeSprint",
     "SticklerStrictFinish",
     "SuckerfishTarget",
 ]

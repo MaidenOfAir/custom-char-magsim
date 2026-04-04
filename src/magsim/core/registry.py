@@ -38,6 +38,7 @@ RACER_ABILITIES: dict[RacerName, set[AbilityName]] = {
     "Romantic": {"RomanticMove"},
     "RocketScientist": {"RocketScientistBoost"},
     "Scoocher": {"ScoochStep"},
+    "Shoe": {"ShoeLaced"}.
     "Sisyphus": {"SisyphusCurse"},
     "Skipper": {"SkipperTurn"},
     "Stickler": {"SticklerStrictFinishManager"},

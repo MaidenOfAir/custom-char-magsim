@@ -103,7 +103,7 @@ RacerModifierName = Literal[
     "PartySelfBoost",
     "RocketScientistLiftoff",
     "SisyphusStumble",
-    "shoeSprint",
+    "ShoeSprint",
     "SticklerStrictFinish",
     "SuckerfishTarget",
 ]

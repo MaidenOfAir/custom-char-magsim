@@ -45,9 +45,8 @@ class HareSpeed(RacerModifier, RollModificationMixin):
             raise ValueError(msg)
 
         # +2 to main move
-        if rolling_racer_idx == owner_idx:
-            query.modifiers.append(2)
-            query.modifier_sources.append((self.name, 2))
+        query.modifiers.append(2)
+        query.modifier_sources.append((self.name, 2))
 
         return [
             AbilityTriggeredEvent(

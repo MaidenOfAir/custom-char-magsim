@@ -15,6 +15,8 @@ from magsim.engine.abilities import (
     remove_racer_modifier,
 )
 
+from magsim.engine.flow import mark_finished
+
 if TYPE_CHECKING:
     from magsim.core.events import GameEvent
     from magsim.core.types import AbilityName, ModifierName

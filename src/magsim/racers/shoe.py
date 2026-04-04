@@ -23,6 +23,9 @@ from magsim.engine.abilities import (
     remove_racer_modifier,
 )
 
+from magsim.engine.movement import push_trip
+
+
 if TYPE_CHECKING:
     from magsim.core.agent import Agent
     from magsim.core.events import MoveDistanceQuery
@@ -39,18 +42,19 @@ class ShoeSprint(RacerModifier, RollModificationMixin):
         self,
         query: MoveDistanceQuery,
         owner_idx: int | None,
-        engine: GameEngine
+        engine: GameEngine,
+        rolling_racer_idx: int,
     ) -> list[AbilityTriggeredEvent]:
         if owner_idx is None:
             msg = f"owner_idx should never be None for {self.name}"
             raise ValueError(msg)
 
-        owner = engine.get_racer(owner.idx)
+        owner = engine.get_racer(owner_idx)
 
         racers_ahead = 0
         for r in engine.state.racers:
             if r.position > owner.position:
-                racers_ahead++
+                racers_ahead+=1
 
 
         # Bonus to main move
@@ -62,7 +66,7 @@ class ShoeSprint(RacerModifier, RollModificationMixin):
                 owner_idx,
                 self.name,
                 phase=Phase.ROLL_WINDOW,
-                target_racer_idx=rolling_racer_idx,
+                target_racer_idx=owner_idx,
             ),
         ]
 
@@ -91,7 +95,7 @@ class ShoeLaced(Ability, LifecycleManagedMixin):
             push_trip(
                 engine,
                 phase=event.phase,
-                tripped_racer_idx=o.idx,
+                tripped_racer_idx=owner.idx,
                 source=self.name,
                 responsible_racer_idx=owner.idx,
                 emit_ability_triggered="after_resolution",

@@ -9,6 +9,8 @@ from magsim.core.events import (
     GameEvent,
     Phase,
     TurnStartEvent,
+    PostMoveEvent,
+    PostWarpEvent,
 )
 from magsim.core.mixins import (
     LifecycleManagedMixin,
@@ -29,25 +31,31 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class HareSpeed(RacerModifier, RollModificationMixin):
-    name: AbilityName | ModifierName = "HareSpeed"
+class ShoeSprint(RacerModifier, RollModificationMixin):
+    name: AbilityName | ModifierName = "ShoeSprint"
 
     @override
     def modify_roll(
         self,
         query: MoveDistanceQuery,
         owner_idx: int | None,
-        engine: GameEngine,
-        rolling_racer_idx: int,
+        engine: GameEngine
     ) -> list[AbilityTriggeredEvent]:
         if owner_idx is None:
             msg = f"owner_idx should never be None for {self.name}"
             raise ValueError(msg)
 
-        # +2 to main move
-        if rolling_racer_idx == owner_idx:
-            query.modifiers.append(2)
-            query.modifier_sources.append((self.name, 2))
+        owner = engine.get_racer(owner.idx)
+
+        racers_ahead = 0
+        for r in engine.state.racers:
+            if r.position > owner.position:
+                racers_ahead++
+
+
+        # Bonus to main move
+        query.modifiers.append(racers_ahead)
+        query.modifier_sources.append((self.name, racers_ahead))
 
         return [
             AbilityTriggeredEvent(
@@ -60,9 +68,9 @@ class HareSpeed(RacerModifier, RollModificationMixin):
 
 
 @dataclass
-class HareHubris(Ability, LifecycleManagedMixin):
-    name: AbilityName = "HareHubris"
-    triggers: tuple[type[GameEvent], ...] = (TurnStartEvent,)
+class ShoeLaced(Ability, LifecycleManagedMixin):
+    name: AbilityName = "ShoeLaced"
+    triggers: tuple[type[GameEvent], ...] = (PostMoveEvent,PostWarpEvent,)
 
     @override
     def execute(
@@ -72,29 +80,40 @@ class HareHubris(Ability, LifecycleManagedMixin):
         engine: GameEngine,
         agent: Agent,
     ):
-        if not isinstance(event, TurnStartEvent) or event.target_racer_idx != owner.idx:
+        if not isinstance(event, PostMoveEvent or PostWarpEvent):
             return "skip_trigger"
 
-        max_others = max(
-            r.position
-            for r in engine.state.racers
-            if is_active(r) and r.idx != owner.idx
-        )
-        if owner.position > max_others:
-            engine.skip_main_move(
-                responsible_racer_idx=owner.idx,
-                source=self.name,
-                skipped_racer_idx=owner.idx,
-            )
+        # CASE 1: Shoe moved onto someone
+        if event.target_racer_idx == owner.idx:
             engine.log_info(
-                f"{owner.repr} is sole leader! {self.name} triggers - skips main move.",
+                f"{owner.repr} moved onto {owner.position} and trips itself with {self.name}!",
             )
-            return AbilityTriggeredEvent(
-                responsible_racer_idx=owner.idx,
-                source=self.name,
+            push_trip(
+                engine,
                 phase=event.phase,
-                target_racer_idx=owner.idx,
+                tripped_racer_idx=o.idx,
+                source=self.name,
+                responsible_racer_idx=owner.idx,
+                emit_ability_triggered="after_resolution",
             )
+
+        # CASE 2: Someone else moved onto shoe
+        else:
+            mover = engine.get_racer(event.target_racer_idx)
+            if mover.active and mover.position == owner.position:
+                if not owner.tripped:
+                    # only log when actually tripping
+                    engine.log_info(
+                        f"{mover.repr} stepped onto {owner.repr} and trips up {owner.repr} due to {self.name}!",
+                    )
+                push_trip(
+                    engine,
+                    phase=event.phase,
+                    tripped_racer_idx=owner.idx,
+                    source=self.name,
+                    responsible_racer_idx=owner.idx,
+                    emit_ability_triggered="after_resolution",
+                )
 
         return "skip_trigger"
 
@@ -103,7 +122,7 @@ class HareHubris(Ability, LifecycleManagedMixin):
         add_racer_modifier(
             engine,
             owner_idx,
-            HareSpeed(owner_idx=owner_idx),
+            ShoeSprint(owner_idx=owner_idx),
         )
 
     @override
@@ -111,5 +130,5 @@ class HareHubris(Ability, LifecycleManagedMixin):
         remove_racer_modifier(
             engine,
             owner_idx,
-            HareSpeed(owner_idx=owner_idx),
+            ShoeSprint(owner_idx=owner_idx),
         )

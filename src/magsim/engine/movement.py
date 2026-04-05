@@ -17,6 +17,7 @@ from magsim.core.events import (
     SimultaneousMoveCmdEvent,
     SimultaneousWarpCmdEvent,
     TripCmdEvent,
+    TripRecoveryEvent,
     WarpCmdEvent,
     WarpData,
 )
@@ -610,6 +611,25 @@ def push_trip(
 ):
     engine.push_event(
         TripCmdEvent(
+            target_racer_idx=tripped_racer_idx,
+            source=source,
+            phase=phase,
+            emit_ability_triggered=emit_ability_triggered,
+            responsible_racer_idx=responsible_racer_idx,
+        ),
+    )
+
+def push_untrip(
+    engine: GameEngine,
+    phase: Phase,
+    *,
+    untripped_racer_idx: int,
+    source: Source,
+    responsible_racer_idx: int | None,
+    emit_ability_triggered: EventTriggerMode = "after_resolution",
+):
+    engine.push_event(
+        TripRecoveryEvent(
             target_racer_idx=tripped_racer_idx,
             source=source,
             phase=phase,

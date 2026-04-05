@@ -113,22 +113,22 @@ class ShoeLaced(Ability, LifecycleManagedMixin):
                 )
 
         # CASE 2: Someone else moved onto shoe
-        # else:
-        #     mover = engine.get_racer(event.target_racer_idx)
-        #     if mover.active and mover.position == owner.position:
-        #         if not owner.tripped:
-        #             # only log when actually tripping
-        #             engine.log_info(
-        #                 f"{mover.repr} stepped onto {owner.repr} and trips up {owner.repr} due to {self.name}!",
-        #             )
-        #         push_trip(
-        #             engine,
-        #             phase=event.phase,
-        #             tripped_racer_idx=owner.idx,
-        #             source=self.name,
-        #             responsible_racer_idx=owner.idx,
-        #             emit_ability_triggered="after_resolution",
-        #         )
+        else:
+            mover = engine.get_racer(event.target_racer_idx)
+            if mover.active and mover.position == owner.position:
+                if not owner.tripped:
+                    # only log when actually tripping
+                    engine.log_info(
+                        f"{mover.repr} stepped onto {owner.repr} and trips up {owner.repr} due to {self.name}!",
+                    )
+                push_trip(
+                    engine,
+                    phase=event.phase,
+                    tripped_racer_idx=owner.idx,
+                    source=self.name,
+                    responsible_racer_idx=owner.idx,
+                    emit_ability_triggered="after_resolution",
+                )
 
         return "skip_trigger"
 

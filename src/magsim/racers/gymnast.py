@@ -5,31 +5,27 @@ from typing import TYPE_CHECKING, override
 
 from magsim.core.abilities import Ability
 from magsim.core.events import (
-    AbilityTriggeredEvent,
+    AbilityTriggeredEventOrSkipped,
     GameEvent,
     Phase,
-    TurnStartEvent,
-    PostMoveEvent,
-    PostWarpEvent,
+    TripCmdEvent,
+    TripRecoveryEvent,
+    RollResultEvent,
 )
 from magsim.core.mixins import (
-    LifecycleManagedMixin,
-    RollModificationMixin,
-)
-from magsim.core.modifiers import RacerModifier
-from magsim.core.state import ActiveRacerState, is_active
-from magsim.engine.abilities import (
-    add_racer_modifier,
-    remove_racer_modifier,
-)
 
-from magsim.engine.movement import push_trip
+)
+from magsim.core.state import ActiveRacerState
+from magsim.engine.abilities import (
+    )
+
+from magsim.engine.movement import push_trip, push_move, push_untrip
 
 
 if TYPE_CHECKING:
     from magsim.core.agent import Agent
-    from magsim.core.events import MoveDistanceQuery
-    from magsim.core.types import AbilityName, ModifierName
+    from magsim.core.events import
+    from magsim.core.types import AbilityName
     from magsim.engine.game_engine import GameEngine
 
 
@@ -46,7 +42,7 @@ class GymnastCartwheel(Ability):
         owner: ActiveRacerState,
         engine: GameEngine,
         agent: Agent,
-    ) -> AbilitytriggeredEventOrSkipped:
+    ) -> AbilityTriggeredEventOrSkipped:
 
         if not isinstance(event, TripCmdEvent or TripRecoveryEvent or RollResultEvent):
             return "skip_trigger"

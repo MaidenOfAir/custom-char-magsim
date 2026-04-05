@@ -44,31 +44,36 @@ class ShoeSprint(RacerModifier, RollModificationMixin):
         owner_idx: int | None,
         engine: GameEngine,
         rolling_racer_idx: int,
-    ) -> list[AbilityTriggeredEvent]:
+    ) -> list[AbilityTriggeredEventOrSkipped]:
         if owner_idx is None:
             msg = f"owner_idx should never be None for {self.name}"
             raise ValueError(msg)
 
         owner = engine.get_racer(owner_idx)
 
-        racers_ahead = 0
-        for r in engine.state.racers:
-            if r.position > owner.position:
-                racers_ahead+=1
+        ActiveRacers = engine.get_active_racers()
 
+        racers_ahead = [r for r in ActiveRacers if r.position > owner.position]
 
-        # Bonus to main move
-        query.modifiers.append(racers_ahead)
-        query.modifier_sources.append((self.name, racers_ahead))
+#         Skips ability if shoe is not behind any racers
+        if racers_ahead:
 
-        return [
-            AbilityTriggeredEvent(
-                owner_idx,
-                self.name,
-                phase=Phase.ROLL_WINDOW,
-                target_racer_idx=owner_idx,
-            ),
-        ]
+            #Callout for shoe movement bonus
+            engine.log_info(f"{owner.repr} gets a movement bonus of {len(racers_ahead)} because there are {len(racers_ahead)} racers ahead of it")
+
+            # Bonus to main move
+            query.modifiers.append(len(racers_ahead))
+            query.modifier_sources.append((self.name, len(racers_ahead)))
+
+            return [
+                AbilityTriggeredEvent(
+                    owner_idx,
+                    self.name,
+                    phase=Phase.ROLL_WINDOW,
+                    target_racer_idx=owner_idx,
+                ),
+            ]
+        return []
 
 
 @dataclass
@@ -89,17 +94,23 @@ class ShoeLaced(Ability, LifecycleManagedMixin):
 
         # CASE 1: Shoe moved onto someone
         if event.target_racer_idx == owner.idx:
-            engine.log_info(
-                f"{owner.repr} moved onto {owner.position} and trips itself with {self.name}!",
+            racers_on_space = engine.get_racers_at_position(
+                tile_idx=owner.position,
+                except_racer_idx=owner.idx,
             )
-            push_trip(
-                engine,
-                phase=event.phase,
-                tripped_racer_idx=owner.idx,
-                source=self.name,
-                responsible_racer_idx=owner.idx,
-                emit_ability_triggered="after_resolution",
-            )
+
+            if trippers := [r for r in racers_on_space]:
+                engine.log_info(
+                    f"{owner.repr} moved onto {owner.position} alongside {', '.join([t.repr for t in trippers])} and trips itself with {self.name}!",
+                )
+                push_trip(
+                    engine,
+                    phase=event.phase,
+                    tripped_racer_idx=owner.idx,
+                    source=self.name,
+                    responsible_racer_idx=owner.idx,
+                    emit_ability_triggered="after_resolution",
+                )
 
         # CASE 2: Someone else moved onto shoe
         else:

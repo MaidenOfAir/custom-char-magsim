@@ -21,6 +21,7 @@ RACER_ABILITIES: dict[RacerName, set[AbilityName]] = {
     "ForbiddenBook": {"ForbiddenBookIncinerate"},
     "Genius": {"GeniusPrediction"},
     "Gunk": {"GunkSlime"},
+    "Gymnast": {"GymnastCarwheel"},
     "Hare": {"HareHubris"},
     "Halcyon": {"HalcyonModifierManager"},
     "Heckler": {"HecklerHeckle"},

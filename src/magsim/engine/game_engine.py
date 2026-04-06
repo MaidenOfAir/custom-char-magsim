@@ -470,10 +470,12 @@ class GameEngine:
                 | RollResultEvent()
                 | RacerFinishedEvent()
                 | RacerEliminatedEvent()
+                | TripRecoveryEvent()
             ):
                 self.publish_to_subscribers(event)
             case TripCmdEvent():
                 handle_trip_cmd(self, event)
+                self.publish_to_subscribers(event)
             case MoveCmdEvent():
                 handle_move_cmd(self, event)
             case SimultaneousMoveCmdEvent():
@@ -491,6 +493,7 @@ class GameEngine:
                 resolve_main_move(self, event)
             case ExecuteMainMoveEvent():
                 handle_execute_main_move(self, event)
+
 
             case _:
                 pass

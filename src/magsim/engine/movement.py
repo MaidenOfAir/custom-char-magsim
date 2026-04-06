@@ -481,8 +481,6 @@ def handle_simultaneous_warp_cmd(engine: GameEngine, evt: SimultaneousWarpCmdEve
 
 def handle_trip_cmd(engine: GameEngine, evt: TripCmdEvent):
     racer = engine.get_racer(evt.target_racer_idx)
-    if not racer.active:
-        return
 
     racer.tripping_racers.append(evt.responsible_racer_idx)
     if racer.tripped:
@@ -630,7 +628,7 @@ def push_untrip(
 ):
     engine.push_event(
         TripRecoveryEvent(
-            target_racer_idx=tripped_racer_idx,
+            target_racer_idx=untripped_racer_idx,
             source=source,
             phase=phase,
             emit_ability_triggered=emit_ability_triggered,

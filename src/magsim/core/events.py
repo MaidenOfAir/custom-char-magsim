@@ -293,7 +293,7 @@ class PostTripEvent(GameEvent, HasTargetRacer): ...
 
 
 @dataclass(frozen=True)
-class TripRecoveryEvent(GameEvent, HasTargetRacer):
+class TripRecoveryEvent(GameEvent, EmitsAbilityTriggeredEvent, HasTargetRacer):
     tripping_racers: list[int | None] = field(default_factory=list)
     phase: Phase = Phase.PRE_MAIN
 

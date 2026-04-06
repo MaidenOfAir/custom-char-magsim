@@ -177,6 +177,7 @@ class GameEngine:
             racer.main_move_consumed = True
             self.push_event(
                 TripRecoveryEvent(
+                    emit_ability_triggered="never",
                     target_racer_idx=cr,
                     tripping_racers=tripping_racers,
                     responsible_racer_idx=None,

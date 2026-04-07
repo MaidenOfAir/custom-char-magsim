@@ -28,8 +28,8 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class EggCopyAbility(Ability, SetupPhaseMixin, SelectionDecisionMixin[RacerStat]):
-    name: AbilityName = "EggCopy"
+class CloudgirlCopyAbility(Ability, SetupPhaseMixin, SelectionDecisionMixin[RacerStat]):
+    name: AbilityName = "CloudgirlCopy"
     triggers: tuple[type[GameEvent], ...] = (TurnStartEvent,)
 
     copied_racer: RacerName | None = None
@@ -82,7 +82,7 @@ class EggCopyAbility(Ability, SetupPhaseMixin, SelectionDecisionMixin[RacerStat]
         )
         if picked_racer is None:
             raise AssertionError(
-                "Egg should always have a target to pick.",
+                "The Cloudgirl should always have a target to pick.",
             )
 
         self.copied_racer = picked_racer.racer_name
@@ -91,7 +91,7 @@ class EggCopyAbility(Ability, SetupPhaseMixin, SelectionDecisionMixin[RacerStat]
 
         # Instantiate fresh abilities
         new_core = engine.instantiate_racer_abilities(picked_racer.racer_name)
-        # Keep Egg ability
+        # Keep Cloudgirl ability
         new_core.append(self)
 
         engine.replace_core_abilities(owner.idx, new_core)

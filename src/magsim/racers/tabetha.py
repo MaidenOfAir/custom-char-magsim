@@ -26,8 +26,8 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class AbilityGenius(Ability, SelectionDecisionMixin[int]):
-    name: AbilityName = "GeniusPrediction"
+class AbilityTabetha(Ability, SelectionDecisionMixin[int]):
+    name: AbilityName = "TabethaPrediction"
     triggers: tuple[type[GameEvent], ...] = (
         TurnStartEvent,
         RollModificationWindowEvent,

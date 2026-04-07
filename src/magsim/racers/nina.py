@@ -25,8 +25,8 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class TwinCopyAbility(Ability, SetupPhaseMixin, SelectionDecisionMixin[RacerStat]):
-    name: AbilityName = "TwinCopy"
+class NinaCopyAbility(Ability, SetupPhaseMixin, SelectionDecisionMixin[RacerStat]):
+    name: AbilityName = "NinaCopy"
     triggers: tuple[type[GameEvent], ...] = (TurnStartEvent,)
 
     copied_racer: RacerName | None = None
@@ -97,7 +97,7 @@ class TwinCopyAbility(Ability, SetupPhaseMixin, SelectionDecisionMixin[RacerStat
         )
         if picked_racer is None:
             raise AssertionError(
-                "Twin should always have a target to pick.",
+                "Nina should always have a target to pick.",
             )
 
         engine.log_info(f"{owner.repr} picked {picked_racer.racer_name}!")
@@ -106,7 +106,7 @@ class TwinCopyAbility(Ability, SetupPhaseMixin, SelectionDecisionMixin[RacerStat
 
         # Instantiate fresh abilities
         new_core = engine.instantiate_racer_abilities(picked_racer.racer_name)
-        # Keep Twin ability
+        # Keep Nina ability
         new_core.append(self)
 
         engine.replace_core_abilities(owner.idx, new_core)

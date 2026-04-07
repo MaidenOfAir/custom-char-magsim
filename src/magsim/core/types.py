@@ -95,6 +95,8 @@ AbilityName = Literal[
 
 RacerModifierName = Literal[
     "BlimpModifier",
+    "BlimpSpeed",
+    "BlimpSlow",
     "CoachBoost",
     "ForbiddenBookStrikeOne",
     "ForbiddenBookStrikeTwo",
@@ -110,7 +112,7 @@ RacerModifierName = Literal[
     "ShoeSprint",
     "SticklerStrictFinish",
     "SuckerfishTarget",
-    "TreadillBoost"
+    "TreadmillBoost"
 ]
 
 BoardModifierName = Literal[

@@ -5,10 +5,24 @@ from typing import TYPE_CHECKING, override
 
 from magsim.core.abilities import Ability
 from magsim.core.events import (
+    AbilityTriggeredEvent,
     AbilityTriggeredEventOrSkipped,
     GameEvent,
     RollResultEvent,
+    Phase,
 )
+
+from magsim.core.modifiers import RacerModifier
+from magsim.engine.abilities import (
+    add_racer_modifier,
+    remove_racer_modifier,
+)
+
+from magsim.core.mixins import (
+    LifecycleManagedMixin,
+    RollModificationMixin,
+)
+
 from magsim.engine.movement import push_move
 
 if TYPE_CHECKING:
@@ -38,12 +52,11 @@ class TreadmillBoost(RacerModifier, RollModificationMixin):
         ):
             return []
 
-        delta = boost_val
-        source = TreadmillBoost
+        delta = self.boost_val
 
         if delta != 0:
             query.modifiers.append(delta)
-            query.modifier_sources.append((source, delta))
+            query.modifier_sources.append((self.name, delta))
 
             return [
                 AbilityTriggeredEvent(
@@ -59,7 +72,7 @@ class TreadmillBoost(RacerModifier, RollModificationMixin):
 
 
 @dataclass
-class AbilityTreadmillBikeSpeedUp(Ability):
+class AbilityTreadmillBikeSpeedUp(Ability, LifecycleManagedMixin):
     name: AbilityName = "TreadmillBikeSpeedUp"
     triggers: tuple[type[GameEvent], ...] = (RollResultEvent,)
 
@@ -82,40 +95,42 @@ class AbilityTreadmillBikeSpeedUp(Ability):
 
 
 #         if bike rolls 1 or 2
-        if (event.dice_value == 1 or event.dice_value == 2:
+        if event.dice_value == 1 or event.dice_value == 2:
 
 #                 and is not ready
             if not self.treadmill_bike_ready:
                 engine.log_info(
                     f"{owner.repr} rolled a {event.dice_value} and starts speeding up!",
                 )
-
-
 #                 set it to be ready
                 self.treadmill_bike_ready = True
                 return "skip_trigger"
 
-#             if it is ready, though
+#             if it is ready, give it a permanent +1 and make it unready
             if self.treadmill_bike_ready:
-                owner.modifiers.boost_val += 1
+#                 Find indices of all instances of treadmill boost in owner's modifier list'
+                mod_indices: list(bool) = []
+                mod_indices = [i for i, val in enumerate(owner.modifiers) if isinstance(val, TreadmillBoost)]
+#                Add 1 to each boost_val
+                for index in mod_indices:
+                    index = mod_indices.pop(0)
+                    owner.modifiers[index].boost_val += 1
+#                     Set treadmill to not ready
+                self.treadmill_bike_ready = False
+#                 Send out "ability triggeered"" announcement
                 return [
                     AbilityTriggeredEvent(
                         owner.idx,
                         self.name,
-                        phase=eventphase,
+                        phase=event.phase,
                         target_racer_idx=owner.idx,
                     ),
                 ]
-
-
-
-
-
         return "skip_trigger"
 
     @override
     def on_gain(self, engine: GameEngine, owner_idx: int):
-        # Apply the TreadmillBikeSpeedUp modifier to treadmill bike
+        # Apply the TreadmillBoost modifier to treadmill bike
         add_racer_modifier(
             engine,
             owner_idx,

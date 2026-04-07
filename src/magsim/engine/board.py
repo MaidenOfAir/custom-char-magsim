@@ -10,14 +10,18 @@ from magsim.core.modifiers import SpaceModifier
 from magsim.engine.movement import push_move
 
 if TYPE_CHECKING:
-    from magsim.core.events import GameEvent, Phase
+    from magsim.core.events import (
+        GameEvent,
+        Phase,
+        RacerEliminatedEvent,
+    )
     from magsim.core.state import RacerState
     from magsim.core.types import (
         AbilityName,
         BoardName,
         ModifierName,
     )
-    from magsim.engine.game_engine import GameEngine
+    from magsim.engine.game_engine import GameEngine, push_event
 
 
 @dataclass(slots=True)
@@ -245,6 +249,38 @@ class VictoryPointTile(SpaceModifier, LandingHookMixin):
             f"{self.display_name}: {racer.repr} gains +{self.amount} VP (now {racer.victory_points}).",
         )
 
+@dataclass
+class EliminationTile(SpaceModifier, LandingHookMixin):
+#     On Landing, Eliminate player
+
+    name: AbilityName | ModifierName = "EliminationTile"
+    owner_idx: int | None = None
+    priority: int = 0
+
+    @override
+    def on_land(
+        self,
+        tile: int,
+        racer_idx: int,
+        phase: Phase,
+        engine: GameEngine,
+    ) -> None:
+        racer = engine.get_racer(racer_idx)
+        # strip racer of all their abilities
+        engine.clear_all_abilities(racer.idx)
+        racer.eliminate()
+
+        engine.log_info(
+            f"{racer.repr} stepped on the wrong tile and EXPLODED!!!",
+        )
+        engine.push_event(
+                RacerEliminatedEvent(
+                    target_racer_idx=racer_idx,
+                    responsible_racer_idx=None,
+                    source=self.name,
+                    phase=phase,
+                ),
+        )
 
 def build_wild_wilds() -> Board:
     return Board(
@@ -263,6 +299,21 @@ def build_wild_wilds() -> Board:
         },
     )
 
+def build_brutal() -> Board:
+    return Board(
+        length=25,
+        static_features={
+            5: [TripTile(None)],
+            10: [TripTile(None)],
+            11: [MoveDeltaTile(None, delta=-3)],
+            13: [EliminationTile(None)],
+            15: [TripTile(None)],
+            19: [MoveDeltaTile(None, delta=-3)],
+            21: [TripTile(None)],
+            24: [MoveDeltaTile(None, delta=-2)],
+        },
+    )
+
 
 BoardFactory = Callable[[], Board]
 
@@ -272,4 +323,5 @@ BOARD_DEFINITIONS: dict[BoardName, BoardFactory] = {
         static_features={},
     ),
     "WildWilds": build_wild_wilds,
+    "Brutal": build_brutal,
 }

@@ -119,9 +119,10 @@ BoardModifierName = Literal[
     "MoveDeltaTile",
     "TripTile",
     "VictoryPointTile",
+    "EliminationTile",
 ]
 
-BoardName = Literal["Standard", "WildWilds"]
+BoardName = Literal["Standard", "WildWilds","Brutal"]
 
 SystemSource = Literal["Board", "System"]
 ModifierName = RacerModifierName | BoardModifierName

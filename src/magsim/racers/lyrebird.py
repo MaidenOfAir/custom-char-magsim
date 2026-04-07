@@ -19,8 +19,8 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class LovableLoserBonus(Ability):
-    name: AbilityName = "LovableLoserBonus"
+class LyrebirdBonus(Ability):
+    name: AbilityName = "LyrebirdBonus"
     triggers: tuple[type[GameEvent], ...] = (TurnStartEvent,)
     preferred_dice: D6VAlueSet = frozenset([1, 2, 3])
 

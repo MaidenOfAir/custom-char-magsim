@@ -11,7 +11,7 @@ RacerName = Literal[
     "Cheerleader",
     "Centaur",
     "Coach",
-    "Copycat",
+    "Lulu",
     "Ludomingo",
     "Duelist",
     "Cloudgirl",

@@ -38,7 +38,7 @@ RACER_ABILITIES: dict[RacerName, set[AbilityName]] = {
     "Dreamybird": {"DreamyPull", "DreamyBoostManager"},
     "Romantic": {"RomanticMove"},
     "RocketScientist": {"RocketScientistBoost"},
-    "Scoocher": {"ScoochStep"},
+    "BedtimeStory": {"SlipBy"},
     "Shoe": {"ShoeLaced"},
     "Sisyphus": {"SisyphusCurse"},
     "Skipper": {"SkipperTurn"},

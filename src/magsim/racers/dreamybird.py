@@ -44,8 +44,8 @@ class ModifierDreamySelfBoost(RacerModifier, RollModificationMixin):
         engine: GameEngine,
         rolling_racer_idx: int,
     ) -> list[AbilityTriggeredEvent]:
-        # This modifier is attached to Party Animal, affects their own roll
-        # owner_idx is Party Animal, query.racer_idx is also Party Animal
+        # This modifier is attached to Dreamybird, affects their own roll
+        # owner_idx is Dreamybird, query.racer_idx is also Dreamybird
         if (
             query.racer_idx != owner_idx
             or owner_idx is None
@@ -83,7 +83,7 @@ class AbilityDreamyBoost(Ability, LifecycleManagedMixin):
         add_racer_modifier(
             engine,
             owner_idx,
-            ModifierPartySelfBoost(owner_idx=owner_idx),
+            ModifierDreamySelfBoost(owner_idx=owner_idx),
         )
 
     @override
@@ -91,12 +91,12 @@ class AbilityDreamyBoost(Ability, LifecycleManagedMixin):
         remove_racer_modifier(
             engine,
             owner_idx,
-            ModifierPartySelfBoost(owner_idx=owner_idx),
+            ModifierDreamySelfBoost(owner_idx=owner_idx),
         )
 
 
 @dataclass
-class PartyAnimalPull(Ability):
+class DreamybirdPull(Ability):
     name: AbilityName = "DreamyPull"
     triggers: tuple[type[GameEvent], ...] = (TurnStartEvent,)
 

@@ -28,10 +28,10 @@ if TYPE_CHECKING:
 
 
 @dataclass(eq=True)
-class HugeBabyModifier(SpaceModifier, ApproachHookMixin):
-    """The physical manifestation of the Huge Baby on the board."""
+class HugeSableModifier(SpaceModifier, ApproachHookMixin):
+    """The physical manifestation of the Huge Sable on the board."""
 
-    name: AbilityName | ModifierName = "HugeBabyBlocker"
+    name: AbilityName | ModifierName = "HugeSableBlocker"
     priority: int = 10
 
     @override
@@ -71,8 +71,8 @@ class HugeBabyModifier(SpaceModifier, ApproachHookMixin):
 
 
 @dataclass
-class HugeBabyPush(Ability, LifecycleManagedMixin):
-    name: AbilityName = "HugeBabyPush"
+class HugeSablePush(Ability, LifecycleManagedMixin):
+    name: AbilityName = "HugeSablePush"
     triggers: tuple[type[GameEvent], ...] = (
         PostMoveEvent,
         PostWarpEvent,
@@ -83,14 +83,14 @@ class HugeBabyPush(Ability, LifecycleManagedMixin):
         if (racer := engine.get_active_racer(owner_idx)) is None:
             return
         if racer.position > 0:
-            modifier = HugeBabyModifier(owner_idx=owner_idx)
+            modifier = HugeSableModifier(owner_idx=owner_idx)
             engine.state.board.register_modifier(racer.position, modifier, engine)
 
     @override
     def on_loss(self, engine: GameEngine, owner_idx: int):
         if (racer := engine.get_active_racer(owner_idx)) is None:
             return
-        modifier_template = HugeBabyModifier(owner_idx=owner_idx)
+        modifier_template = HugeSableModifier(owner_idx=owner_idx)
         board = engine.state.board
 
         # 1. Optimization: Check current position first
@@ -118,7 +118,7 @@ class HugeBabyPush(Ability, LifecycleManagedMixin):
         ):
             return "skip_trigger"
 
-        modifier_template = HugeBabyModifier(owner_idx=owner.idx)
+        modifier_template = HugeSableModifier(owner_idx=owner.idx)
 
         # 1. CLEANUP OLD TILE
         if (

@@ -31,10 +31,10 @@ if TYPE_CHECKING:
 
 
 @dataclass(eq=False)
-class ModifierPartySelfBoost(RacerModifier, RollModificationMixin):
-    """Applied TO Party Animal. Boosts their own roll based on neighbors."""
+class ModifierDreamySelfBoost(RacerModifier, RollModificationMixin):
+    """Applied TO Dreamybird. Boosts their own roll based on neighbors."""
 
-    name: AbilityName | ModifierName = "PartySelfBoost"
+    name: AbilityName | ModifierName = "DreamySelfBoost"
 
     @override
     def modify_roll(
@@ -74,8 +74,8 @@ class ModifierPartySelfBoost(RacerModifier, RollModificationMixin):
 
 
 @dataclass
-class AbilityPartyBoost(Ability, LifecycleManagedMixin):
-    name: AbilityName = "PartyBoostManager"
+class AbilityDreamyBoost(Ability, LifecycleManagedMixin):
+    name: AbilityName = "DreamyBoostManager"
     triggers: tuple[type[GameEvent], ...] = ()
 
     @override
@@ -97,7 +97,7 @@ class AbilityPartyBoost(Ability, LifecycleManagedMixin):
 
 @dataclass
 class PartyAnimalPull(Ability):
-    name: AbilityName = "PartyPull"
+    name: AbilityName = "DreamyPull"
     triggers: tuple[type[GameEvent], ...] = (TurnStartEvent,)
 
     @override
@@ -125,7 +125,7 @@ class PartyAnimalPull(Ability):
 
         if moves_to_make:
             engine.log_info(
-                f"{owner.repr} pulls everyone towards him using {self.name}!",
+                f"{owner.repr} pulls everyone towards her using {self.name}!",
             )
             push_simultaneous_move(
                 engine,

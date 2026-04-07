@@ -238,5 +238,11 @@
         "speed": 0,
         "winrate": 0,
         "avg_vp": 0
+    },
+    {
+        "racer_name": "TreadmillBike",
+        "speed": 0,
+        "winrate": 0,
+        "avg_vp": 0
     }
 ]

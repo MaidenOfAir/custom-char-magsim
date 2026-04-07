@@ -45,5 +45,6 @@ RACER_ABILITIES: dict[RacerName, set[AbilityName]] = {
     "Stickler": {"SticklerStrictFinishManager"},
     "Suckerfish": {"SuckerfishRide"},
     "ThirdWheel": {"ThirdWheelJoin"},
+    "TreadmillBike": {"TreadmillBikeSpeedUp"},
     "Nina": {"NinaCopy"},
 }

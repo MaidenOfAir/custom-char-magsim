@@ -43,6 +43,7 @@ RacerName = Literal[
     "Stickler",
     "Suckerfish",
     "ThirdWheel",
+    "TreadmillBike"
     "Nina",
 ]
 
@@ -88,6 +89,7 @@ AbilityName = Literal[
     "SticklerStrictFinishManager",
     "SuckerfishRide",
     "ThirdWheelJoin",
+    "TreadmillBikeSpeedUp"
     "NinaCopy",
 ]
 
@@ -108,6 +110,7 @@ RacerModifierName = Literal[
     "ShoeSprint",
     "SticklerStrictFinish",
     "SuckerfishTarget",
+    "TreadillBoost"
 ]
 
 BoardModifierName = Literal[

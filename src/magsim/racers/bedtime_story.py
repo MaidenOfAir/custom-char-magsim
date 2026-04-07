@@ -19,8 +19,8 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class AbilityScoochStep(Ability):
-    name: AbilityName = "ScoochStep"
+class AbilitySlipBy(Ability):
+    name: AbilityName = "SlipBy"
     triggers: tuple[type[GameEvent], ...] = (AbilityTriggeredEvent,)
 
     @override

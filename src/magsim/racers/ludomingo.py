@@ -29,14 +29,14 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class DicemongerRerollAction(Ability, BooleanDecisionMixin, ExternalAbilityMixin):
+class LudomingoRerollAction(Ability, BooleanDecisionMixin, ExternalAbilityMixin):
     """
     The granted reroll ability.
     - source_racer_idx: Tracks who gets the profit (from ExternalAbilityMixin).
     - used_this_turn: Mutable state (excluded from equality checks by matches_identity).
     """
 
-    name: AbilityName = "DicemongerDeal"
+    name: AbilityName = "LudomingoDeal"
     triggers: tuple[type[GameEvent], ...] = (
         RollModificationWindowEvent,
         PreTurnStartEvent,
@@ -96,7 +96,7 @@ class DicemongerRerollAction(Ability, BooleanDecisionMixin, ExternalAbilityMixin
         # Trigger the mechanic
         trigger_reroll(engine, owner.idx, self.name)
 
-        # Dicemonger Profit Logic (+1 Move)
+        # Ludomingo Profit Logic (+1 Move)
         if owner.idx != self.source_racer_idx:
             engine.log_info(f"{source_racer.repr} profits +1 from {self.name}.")
             push_move(
@@ -120,7 +120,7 @@ class DicemongerRerollAction(Ability, BooleanDecisionMixin, ExternalAbilityMixin
     def get_auto_boolean_decision(
         self,
         engine: GameEngine,
-        ctx: DecisionContext[DicemongerRerollAction],
+        ctx: DecisionContext[LudomingoRerollAction],
     ) -> bool:
         dice_val = ctx.game_state.roll_state.dice_value
         if dice_val is None:
@@ -146,12 +146,12 @@ class DicemongerRerollAction(Ability, BooleanDecisionMixin, ExternalAbilityMixin
 
 
 @dataclass
-class DicemongerRerollManager(Ability, LifecycleManagedMixin):
+class LudomingoRerollManager(Ability, LifecycleManagedMixin):
     """
     The intrinsic ability that grants the Reroll Action to everyone.
     """
 
-    name: AbilityName = "DicemongerRerollManager"
+    name: AbilityName = "LudomingoRerollManager"
     triggers: tuple[type[GameEvent], ...] = ()
 
     @override
@@ -160,7 +160,7 @@ class DicemongerRerollManager(Ability, LifecycleManagedMixin):
         for racer in engine.state.racers:
             # Create instance pointing to ME
             # Note: ExternalAbilityMixin handles the equality logic via matches_identity
-            action = DicemongerRerollAction(source_racer_idx=owner_idx)
+            action = LudomingoRerollAction(source_racer_idx=owner_idx)
             engine.log_debug(
                 f"{engine.get_racer(owner_idx).repr} granted {action.name} to {engine.get_racer(racer.idx).repr}",
             )
@@ -170,7 +170,7 @@ class DicemongerRerollManager(Ability, LifecycleManagedMixin):
     def on_loss(self, engine: GameEngine, owner_idx: int) -> None:
         """Revoke the reroll action from everyone."""
         # Create dummy for matching
-        dummy = DicemongerRerollAction(source_racer_idx=owner_idx)
+        dummy = LudomingoRerollAction(source_racer_idx=owner_idx)
 
         for racer in engine.state.racers:
             engine.revoke_ability(racer.idx, dummy)

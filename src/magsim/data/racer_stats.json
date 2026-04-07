@@ -6,13 +6,13 @@
         "avg_vp": 0.891
     },
     {
-        "racer_name": "Egg",
+        "racer_name": "Cloudgirl",
         "speed": 6.565,
         "winrate": 0.273,
         "avg_vp": 2.401
     },
     {
-        "racer_name": "Mastermind",
+        "racer_name": "Fate",
         "speed": 3.985,
         "winrate": 0.046,
         "avg_vp": 1.417
@@ -24,7 +24,7 @@
         "avg_vp": 0.988
     },
     {
-        "racer_name": "HugeBaby",
+        "racer_name": "HugeSable",
         "speed": 4.084,
         "winrate": 0.087,
         "avg_vp": 0.961
@@ -60,7 +60,7 @@
         "avg_vp": 1.648
     },
     {
-        "racer_name": "Twin",
+        "racer_name": "Nina",
         "speed": 7.83,
         "winrate": 0.374,
         "avg_vp": 2.607
@@ -84,7 +84,7 @@
         "avg_vp": 2.773
     },
     {
-        "racer_name": "Dicemonger",
+        "racer_name": "Ludomingo",
         "speed": 7.132,
         "winrate": 0.268,
         "avg_vp": 2.399
@@ -96,13 +96,13 @@
         "avg_vp": 1.39
     },
     {
-        "racer_name": "LovableLoser",
+        "racer_name": "Lyrebird",
         "speed": 3.828,
         "winrate": 0.042,
         "avg_vp": 3.257
     },
     {
-        "racer_name": "Scoocher",
+        "racer_name": "BedtimeStory",
         "speed": 10.724,
         "winrate": 0.578,
         "avg_vp": 4.533
@@ -138,19 +138,19 @@
         "avg_vp": 1.675
     },
     {
-        "racer_name": "Copycat",
+        "racer_name": "Lulu",
         "speed": 6.025,
         "winrate": 0.183,
         "avg_vp": 1.605
     },
     {
-        "racer_name": "PartyAnimal",
+        "racer_name": "Dreamybird",
         "speed": 5.105,
         "winrate": 0.246,
         "avg_vp": 1.582
     },
     {
-        "racer_name": "BabaYaga",
+        "racer_name": "Baba",
         "speed": 4.032,
         "winrate": 0.163,
         "avg_vp": 1.289
@@ -168,7 +168,7 @@
         "avg_vp": 1.295
     },
     {
-        "racer_name": "Genius",
+        "racer_name": "Tabetha",
         "speed": 3.86,
         "winrate": 0.16,
         "avg_vp": 1.197

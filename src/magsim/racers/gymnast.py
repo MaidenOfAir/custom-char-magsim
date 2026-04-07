@@ -40,7 +40,6 @@ class GymnastCartwheel(Ability):
         agent: Agent,
     ) -> AbilityTriggeredEventOrSkipped:
 
-
         if not isinstance(event, TripCmdEvent) and not isinstance(event, TripRecoveryEvent) and not isinstance(event,RollResultEvent):
             return "skip_trigger"
 
@@ -51,7 +50,7 @@ class GymnastCartwheel(Ability):
 
 #             ...announce it and move forward 1
             engine.log_info(
-                f"{owner.repr} finishes their {self.name} cartwheel!"
+                f"{owner.repr} finishes their {self.name}!"
             )
             push_move(
                 engine,
@@ -62,11 +61,11 @@ class GymnastCartwheel(Ability):
                 responsible_racer_idx=owner.idx,
                 emit_ability_triggered="after_resolution",
             )
+            return "skip_trigger"
 
 
 #         When gymnast gets tripped...
         if isinstance(event, TripCmdEvent) and event.target_racer_idx == owner.idx:
-
 #             Untrip them if they are tripped
             if owner.tripped:
                 push_untrip(
@@ -75,8 +74,9 @@ class GymnastCartwheel(Ability):
                     untripped_racer_idx=owner.idx,
                     source=self.name,
                     responsible_racer_idx=owner.idx,
-                    emit_ability_triggered="after_resolution",
+                    emit_ability_triggered="never",
                 )
+                return "skip_trigger"
 
 #             Otherwise announce and move forward 1
             engine.log_info(
@@ -91,25 +91,30 @@ class GymnastCartwheel(Ability):
                 responsible_racer_idx=owner.idx,
                 emit_ability_triggered="after_resolution",
             )
+            return "skip_trigger"
 
 #         When Someone rolls...
         if isinstance(event, RollResultEvent):
 
 #             Check if it is 3 or 4
-            if event.dice_value == 3 or 4:
-#                 If so, announce it
-                engine.log_info(
-                    f"{engine.get_racer(event.target_racer_idx).repr} rolled a {event.dice_value}, so {owner.repr} uses {self.name}",
-                )
+            if event.dice_value == 3 or event.dice_value == 4:
+#
+#                 If so, and if inchworm's turn, cancel their main move (can only roll dice if untripped, meaning they are going to become tripped)
+                if event.target_racer_idx == owner.idx:
+                    engine.skip_main_move(
+                        responsible_racer_idx=owner.idx,
+                        source=self.name,
+                        skipped_racer_idx=event.target_racer_idx,
+                    )
 
-#                 and immediately push a trip for gymnast
+#                 Also immediately push a trip for gymnast, regardless of who's turn
                 push_trip(
                     engine,
                     phase=event.phase,
                     tripped_racer_idx=owner.idx,
                     source=self.name,
                     responsible_racer_idx=owner.idx,
-                    emit_ability_triggered="after_resolution",
+                    emit_ability_triggered="never",
                 )
 
 

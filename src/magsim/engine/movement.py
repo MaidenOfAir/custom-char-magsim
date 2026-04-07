@@ -506,6 +506,16 @@ def handle_trip_cmd(engine: GameEngine, evt: TripCmdEvent):
         # Publish to subscribers if needed (currently Trip doesn't have listeners, but consistent)
         engine.publish_to_subscribers(post_trip_event)
 
+def handle_trip_recover_cmd(engine: GameEngine, evt: TripRecoveryEvent):
+    racer = engine.get_racer(evt.target_racer_idx)
+
+    engine.log_info(f"{racer.repr} recovers from Trip.")
+    racer.tripped = False
+    racer.tripping_racers = []
+    racer.main_move_consumed = True
+
+    if evt.emit_ability_triggered != "never":
+        engine.push_event(AbilityTriggeredEvent.from_event(evt))
 
 ####
 # Helpers

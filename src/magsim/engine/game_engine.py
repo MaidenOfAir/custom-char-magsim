@@ -47,6 +47,7 @@ from magsim.engine.movement import (
     handle_simultaneous_move_cmd,
     handle_simultaneous_warp_cmd,
     handle_trip_cmd,
+    handle_trip_recover_cmd,
     handle_warp_cmd,
 )
 from magsim.engine.roll import (
@@ -170,11 +171,7 @@ class GameEngine:
         )
 
         if racer.tripped:
-            self.log_info(f"{racer.repr} recovers from Trip.")
-            racer.tripped = False
             tripping_racers = racer.tripping_racers.copy()
-            racer.tripping_racers = []
-            racer.main_move_consumed = True
             self.push_event(
                 TripRecoveryEvent(
                     emit_ability_triggered="never",
@@ -471,12 +468,16 @@ class GameEngine:
                 | RollResultEvent()
                 | RacerFinishedEvent()
                 | RacerEliminatedEvent()
-                | TripRecoveryEvent()
             ):
                 self.publish_to_subscribers(event)
+
             case TripCmdEvent():
-                handle_trip_cmd(self, event)
                 self.publish_to_subscribers(event)
+                handle_trip_cmd(self, event)
+            case TripRecoveryEvent():
+                self.publish_to_subscribers(event)
+                handle_trip_recover_cmd(self, event)
+
             case MoveCmdEvent():
                 handle_move_cmd(self, event)
             case SimultaneousMoveCmdEvent():

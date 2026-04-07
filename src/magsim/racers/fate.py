@@ -28,8 +28,8 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class AbilityMastermindPredict(Ability, SelectionDecisionMixin[ActiveRacerState]):
-    name: AbilityName = "MastermindPredict"
+class AbilityFatePredict(Ability, SelectionDecisionMixin[ActiveRacerState]):
+    name: AbilityName = "FatePredict"
     triggers: tuple[type[GameEvent], ...] = (TurnStartEvent, RacerFinishedEvent)
 
     # Persistent State
@@ -44,7 +44,7 @@ class AbilityMastermindPredict(Ability, SelectionDecisionMixin[ActiveRacerState]
         agent: Agent,
     ) -> AbilityTriggeredEventOrSkipped:
         # ---------------------------------------------------------------------
-        # Trigger 1: Make Prediction (Start of Mastermind's first turn)
+        # Trigger 1: Make Prediction (Start of Fate's first turn)
         # ---------------------------------------------------------------------
         if (
             isinstance(event, TurnStartEvent)
@@ -67,7 +67,7 @@ class AbilityMastermindPredict(Ability, SelectionDecisionMixin[ActiveRacerState]
 
             if target_racer is None:
                 raise AssertionError(
-                    "Mastermind should always have a target to pick, even if it's himself.",
+                    "Fate should always have a target to pick, even if it's itself.",
                 )
 
             # Store State
@@ -115,8 +115,8 @@ class AbilityMastermindPredict(Ability, SelectionDecisionMixin[ActiveRacerState]
                             target_racer_idx=owner.idx,
                         ),
                     )
-                if engine.state.rules.hr_mastermind_steal_1st:
-                    # house rule lets Mastermind steal 1st place instead
+                if engine.state.rules.hr_fate_steal_1st:
+                    # house rule lets fate steal 1st place instead
                     engine.log_info(f"{owner.repr} steals 1st place!")
                     mark_finished(
                         engine,
@@ -125,7 +125,7 @@ class AbilityMastermindPredict(Ability, SelectionDecisionMixin[ActiveRacerState]
                     )
                     mark_finished(engine, owner, 1)
                 else:
-                    # If Mastermind hasn't finished yet, they take 2nd place immediately.
+                    # If fate hasn't finished yet, they take 2nd place immediately.
                     engine.log_info(f"{owner.repr} claims 2nd place immediately!")
                     mark_finished(engine, owner, 2)
 

@@ -96,41 +96,27 @@ class AbilityTreadmillBikeSpeedUp(Ability, LifecycleManagedMixin):
 
 #         if bike rolls 1 or 2
         if event.dice_value == 1 or event.dice_value == 2:
-#             Force bike to always upgrade, for testing
-            self.treadmill_bike_ready = True
 
-#                 and is not ready
-            if not self.treadmill_bike_ready:
-                engine.log_info(
-                    f"{owner.repr} rolled a {event.dice_value} and starts speeding up!",
-                )
-#                 set it to be ready
-                self.treadmill_bike_ready = True
-                return "skip_trigger"
-
-#             if it is ready, give it a permanent +1 and make it unready
-            if self.treadmill_bike_ready:
-#                 Find indices of all instances of treadmill boost in owner's modifier list'
-                mod_indices: list(bool) = []
-                mod_indices = [i for i, val in enumerate(owner.modifiers) if isinstance(val, TreadmillBoost)]
+#             Find index of every TreadmillBoost modifier
+            mod_indices: list(bool) = []
+            mod_indices = [i for i, val in enumerate(owner.modifiers) if isinstance(val, TreadmillBoost)]
 #                Add 1 to each boost_val
-                for index in mod_indices:
-                    index = mod_indices.pop(0)
-                    owner.modifiers[index].boost_val += 1
-#                     Set treadmill to not ready
-                self.treadmill_bike_ready = False
-                engine.log_info(
-                    f"{owner.repr} rolled a {event.dice_value} and finishes speeding up! (+1 to main move)",
-                )
+            for index in mod_indices:
+                index = mod_indices.pop(0)
+                owner.modifiers[index].boost_val += 1
+#                 Announce TreadmillSpeedUp
+            engine.log_info(
+                f"{owner.repr} rolled a {event.dice_value} and speeds up! (+1 to main move)",
+            )
 #                 Send out "ability triggered"" announcement
-                return [
-                    AbilityTriggeredEvent(
-                        owner.idx,
-                        self.name,
-                        phase=event.phase,
-                        target_racer_idx=owner.idx,
-                    ),
-                ]
+            return [
+                AbilityTriggeredEvent(
+                    owner.idx,
+                    self.name,
+                    phase=event.phase,
+                    target_racer_idx=owner.idx,
+                ),
+            ]
         return "skip_trigger"
 
     @override

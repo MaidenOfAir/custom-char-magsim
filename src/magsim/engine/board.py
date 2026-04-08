@@ -323,6 +323,10 @@ BOARD_DEFINITIONS: dict[BoardName, BoardFactory] = {
         length=30,
         static_features={},
     ),
+    "StandardLong": lambda: Board(
+        length=150,
+        static_features={},
+    ),
     "WildWilds": build_wild_wilds,
     "Brutal": build_brutal,
 }

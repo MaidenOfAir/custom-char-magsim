@@ -96,6 +96,8 @@ class AbilityTreadmillBikeSpeedUp(Ability, LifecycleManagedMixin):
 
 #         if bike rolls 1 or 2
         if event.dice_value == 1 or event.dice_value == 2:
+#             Force bike to always upgrade, for testing
+            self.treadmill_bike_ready = True
 
 #                 and is not ready
             if not self.treadmill_bike_ready:

@@ -67,6 +67,7 @@ async def cell_import():
         MoveDeltaTile,
         TripTile,
         VictoryPointTile,
+        EliminationTile,
     )
     from magsim.engine.logging import (
         GameLogHighlighter,
@@ -387,6 +388,8 @@ def cell_visual_setup(math):
         "move_pos_text": "#1B5E20",
         "move_neg_fill": "#EF9A9A",
         "move_neg_text": "#B71C1C",
+        "elimination_fill": "#54020b",
+        "elimination_text": "#ff540a",
     }
 
     def generate_racetrack_positions(
@@ -454,19 +457,19 @@ def cell_manage_state(mo):
     # --- PERSISTENCE STATE ---
     # We only use this to remember values when the UI refreshes (Add/Remove).
     get_selected_racers, set_selected_racers = mo.state(
-        ["Magician", "PartyAnimal", "Egg", "ThirdWheel", "Leaptoad", "Hypnotist"],
+        ["Gymnast", "ForbiddenBook", "Shoe", "TreadmillBike", "BedtimeStory", "Ludomingo"],
         allow_self_loops=True,
     )
     get_racer_to_add, set_racer_to_add = mo.state(None, allow_self_loops=True)
 
     get_saved_positions, set_saved_positions = mo.state(
         {
-            "Magician": 0,
-            "PartyAnimal": 0,
-            "Egg": 0,
-            "ThirdWheel": 0,
-            "Leaptoad": 0,
-            "Hypnotist": 0,
+            "Gymnast": 0,
+            "ForbiddenBook": 0,
+            "Shoe": 0,
+            "TreadmillBike": 0,
+            "BedtimeStory": 0,
+            "Ludomingo": 0,
         },
         allow_self_loops=True,
     )
@@ -481,7 +484,7 @@ def cell_manage_state(mo):
 
     # --- NEW STATES FOR CONFIG LOADING ---
     get_seed, set_seed = mo.state(42, allow_self_loops=True)
-    get_board, set_board = mo.state("Standard", allow_self_loops=True)
+    get_board, set_board = mo.state("Brutal", allow_self_loops=True)
 
     # Track the last seen selection for EACH table to prevent fighting/loops
     get_last_race_hash, set_last_race_hash = mo.state(None, allow_self_loops=True)
@@ -1379,6 +1382,7 @@ def cell_show_simulation_section(
 @app.cell
 def cell_vsialize_track(
     BOARD_THEME,
+    EliminationTile,
     MoveDeltaTile,
     StepSnapshot,
     TripTile,
@@ -1461,6 +1465,11 @@ def cell_vsialize_track(
                             fill_color = BOARD_THEME["move_neg_fill"]
                             text_content = f"{d}"
                             text_fill = BOARD_THEME["move_neg_text"]
+                    elif isinstance(mod, EliminationTile):
+                        fill_color = BOARD_THEME["elimination_fill"]
+                        text_content = "!"
+                        text_fill = BOARD_THEME["elimination_text"]
+                        font_size = "16"
 
             # --- 3. START / END OVERRIDES ---
             if is_start:

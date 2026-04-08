@@ -9,11 +9,12 @@ from magsim.core.mixins import ApproachHookMixin, LandingHookMixin
 from magsim.core.modifiers import SpaceModifier
 from magsim.engine.movement import push_move
 
+from magsim.core.events import RacerEliminatedEvent
+
 if TYPE_CHECKING:
     from magsim.core.events import (
         GameEvent,
         Phase,
-        RacerEliminatedEvent,
     )
     from magsim.core.state import RacerState
     from magsim.core.types import (

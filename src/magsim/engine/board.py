@@ -9,6 +9,8 @@ from magsim.core.mixins import ApproachHookMixin, LandingHookMixin
 from magsim.core.modifiers import SpaceModifier
 from magsim.engine.movement import push_move
 
+from magsim.engine.flow import mark_finished
+
 from magsim.core.events import RacerEliminatedEvent
 
 if TYPE_CHECKING:
@@ -282,6 +284,20 @@ class EliminationTile(SpaceModifier, LandingHookMixin):
                     phase=phase,
                 ),
         )
+
+        # Check for sudden game end (if only 1 racer left)
+        active_count = sum(1 for r in engine.state.racers if r.active)
+        if active_count == 1:
+            last_racers = [r for r in engine.state.racers if r.active]
+            last_racer = last_racers[0]
+            rank = sum([1 for r in engine.state.racers if r.finished]) + 1
+            if rank <= 2:
+                engine.log_info(f"{last_racer.repr} is the last remaining racer.")
+                mark_finished(engine, racer=last_racer, rank=rank)
+            else:
+                engine.log_error(
+                    f"Unexpected state: {last_racer.repr} is the last remaining racer but more than one racer has finished.",
+                )
 
 def build_wild_wilds() -> Board:
     return Board(

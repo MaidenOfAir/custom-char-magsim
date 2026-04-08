@@ -117,7 +117,10 @@ class AbilityTreadmillBikeSpeedUp(Ability, LifecycleManagedMixin):
                     owner.modifiers[index].boost_val += 1
 #                     Set treadmill to not ready
                 self.treadmill_bike_ready = False
-#                 Send out "ability triggeered"" announcement
+                engine.log_info(
+                    f"{owner.repr} rolled a {event.dice_value} and finishes speeding up! (+1 to main move)",
+                )
+#                 Send out "ability triggered"" announcement
                 return [
                     AbilityTriggeredEvent(
                         owner.idx,

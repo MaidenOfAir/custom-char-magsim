@@ -244,5 +244,11 @@
         "speed": 0,
         "winrate": 0,
         "avg_vp": 0
+    },
+    {
+        "racer_name": "VanillaBean",
+        "speed": 0,
+        "winrate": 0,
+        "avg_vp": 0
     }
 ]

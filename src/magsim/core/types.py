@@ -45,6 +45,7 @@ RacerName = Literal[
     "ThirdWheel",
     "TreadmillBike",
     "Nina",
+    "VanillaBean",
 ]
 
 AbilityName = Literal[
@@ -122,7 +123,7 @@ BoardModifierName = Literal[
     "EliminationTile",
 ]
 
-BoardName = Literal["Standard", "WildWilds","Brutal"]
+BoardName = Literal["Standard", "WildWilds","Brutal","StandardLong"]
 
 SystemSource = Literal["Board", "System"]
 ModifierName = RacerModifierName | BoardModifierName

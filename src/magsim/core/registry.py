@@ -47,4 +47,5 @@ RACER_ABILITIES: dict[RacerName, set[AbilityName]] = {
     "ThirdWheel": {"ThirdWheelJoin"},
     "TreadmillBike": {"TreadmillBikeSpeedUp"},
     "Nina": {"NinaCopy"},
+    "VanillaBean": {None}
 }
